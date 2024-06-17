@@ -1,14 +1,14 @@
 import jax
 import jax.numpy as jnp
 
-def rho_comp(theta, k_func, Xb, yb, Xc, yc):
-    Kb = k_func(theta, Xb[:, None], Xb) # make_kernel_matrix(k_func, Xb, Xb)
-    Kb += 1e-12 * jnp.eye(len(Kb)) # TODO: REVIEW. just to be sure with Cholesky
+def rho_comp(theta, k_func, X_full, y_full, X_sub, y_sub):
+    K_full = k_func(theta, X_full[:, None], X_full) # make_kernel_matrix(k_func, Xb, Xb)
+    # Kb += 1e-12 * jnp.eye(len(Kb)) # TODO: REVIEW. just to be sure with Cholesky
 
-    Kc = k_func(theta, Xc[:, None], Xc) # make_kernel_matrix(k_func, Xc, Xc)
-    Kc += 1e-12 * jnp.eye(len(Kc)) # TODO: REVIEW. just to be sure with Cholesky
-    
-    return 1 - (yb @ jnp.linalg.solve(Kb, yb))/(yc @ jnp.linalg.solve(Kc, yc))
+    K_sub = k_func(theta, X_sub[:, None], X_sub) # make_kernel_matrix(k_func, Xc, Xc)
+    # Kc += 1e-12 * jnp.eye(len(Kc)) # TODO: REVIEW. just to be sure with Cholesky
+
+    return 1 - (y_sub @ jnp.linalg.solve(K_sub, y_sub))/(y_full @ jnp.linalg.solve(K_full, y_full))
 
 
 def MMD_comp(theta, k_func, X1, X2):

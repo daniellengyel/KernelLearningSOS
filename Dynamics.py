@@ -17,17 +17,15 @@ def bernoulli_map():
 
     return helper
 
-def gen_traj(curr_map, x0, N):
-
-    x_curr = x0
-    res = []
-    for _ in range(N):
-        res.append(x_curr)
-        x_curr = curr_map(x_curr)
-
-    res.append(x_curr)
+def henon_map(a, b):
     
-    return res
+    def helper(x_vec):
+        x, y = x_vec
+        x1 = 1 - a * x**2 + y
+        y1 = b * x
+        
+        return [x1, y1]
+    return helper
 
 def lorentz_map(s=10, r=28, b=10/3.):
     
