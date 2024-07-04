@@ -77,3 +77,24 @@ def predict_series(pred_funcs, x0, N):
             traj = traj.at[i, k].set(pred_funcs[k](traj[i - 1]))
     return traj
     
+# ====== save and load ========
+import pickle
+import os
+
+def save_res(dynamics_name, res):
+    
+    for k in res:
+        with open(f"Results/{dynamics_name}/{k}.pkl", "wb") as f:
+            pickle.dump(res[k], f)
+        
+        
+def load_res(dynamics_name):
+    res = {}
+    for f_name in os.listdir(f"Results/{dynamics_name}"):
+    
+        with open(f"Results/{dynamics_name}/{f_name}", "rb") as f:
+            res[f_name.split(".")[0]] = pickle.load(f)
+        
+    return res
+
+        
