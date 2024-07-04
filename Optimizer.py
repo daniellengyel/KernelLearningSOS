@@ -103,21 +103,24 @@ def KernelSOS(alpha, thetas, fs, loss, N=50, lmbda=0.001, eps=1e-5, sig=0.1):
 
 # ========= Helper ========
 
-def main_flow(y_idx, ext_kernel, X_batch, y_batch, X_sub, y_sub, lr=0.001, num_steps=200):
+# Hardcoded the sampling of 10 because that is how many parameters our kernel has
+
+def main_flow(y_idx, ext_kernel, X_batch, y_batch, X_sub, y_sub, seed=0, lr=0.001, num_steps=200):
 
     k_func = ext_kernel
-
-    theta = np.ones(10)
+    
+    set_seed(seed)
+    theta = sample_points([[0.001, 10]] * 10, 1)[0] # np.ones(10)
 
     theta_star, losses = flow_rho_relative(theta, k_func, X_batch, y_batch[:, y_idx], X_sub, y_sub[:, y_idx], num_steps, lr)
 
     print("flow min", np.min(losses))
     return losses, theta_star
 
-def main_sos(y_idx, ext_kernel, X_batch, y_batch, X_sub, y_sub, seed=0, N=100, lmbda=1e-4, eps=1e-6, sig=1e-1):
+def main_sos(y_idx, ext_kernel, X_batch, y_batch, X_sub, y_sub, seed=0, N_samples=200, N_steps=100, lmbda=1e-4, eps=1e-6, sig=1e-1):
     # Setup for Kernel SOS.
     set_seed(seed)
-    thetas = sample_points([[0.001, 10]] * 10, 200)
+    thetas = sample_points([[0.001, 10]] * 10, N_samples)
 
     loss = lambda t: rho_comp(t, ext_kernel, X_batch, y_batch[:, y_idx], X_sub, y_sub[:, y_idx])
 
@@ -126,11 +129,10 @@ def main_sos(y_idx, ext_kernel, X_batch, y_batch, X_sub, y_sub, seed=0, N=100, l
 
     alpha0 = jnp.ones(len(fs))
     alpha0 /= jnp.sum(alpha0)
-    theta_star, res, alpha = KernelSOS(alpha0, thetas, fs, loss, N=N, lmbda=lmbda, eps=eps, sig=sig)
+    theta_star, res, alpha = KernelSOS(alpha0, thetas, fs, loss, N=N_steps, lmbda=lmbda, eps=eps, sig=sig)
     print("found min", np.min(res[:, 1]))
     print("sample min", np.min(fs))
 
-#     plt.plot(res[:, 1])
     losses = res[:, 1]
     return losses, theta_star
     

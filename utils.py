@@ -6,6 +6,9 @@ import jax
 
 from tqdm import tqdm
 
+from Kernels import ext_kernel
+
+
 def set_seed(seed):
     """
     Set the random seed for reproducibility in both standard Python and NumPy.
@@ -74,4 +77,3 @@ def predict_series(pred_funcs, x0, N):
             traj = traj.at[i, k].set(pred_funcs[k](traj[i - 1]))
     return traj
     
-
