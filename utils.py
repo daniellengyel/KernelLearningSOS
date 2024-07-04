@@ -16,6 +16,13 @@ def set_seed(seed):
     random.seed(seed)
     np.random.seed(seed)
 
+def hausdorff_distance(x, y):
+    HD = -float("inf")
+    for i in range(len(x)):
+        curr_min = jnp.min(jnp.linalg.norm(y - x[i], axis=1))
+        HD = jnp.maximum(curr_min, HD)
+    return HD
+
 # def get_predict_func(k_func, X, Y):
 #     K_XX = k_func(X[:, None], X) # + 1e-10 * np.eye(len(X)) # make_kernel_matrix(k_func, X, X)
 #     K_XXinv_Y = jnp.linalg.solve(K_XX, Y)
@@ -67,3 +74,4 @@ def predict_series(pred_funcs, x0, N):
             traj = traj.at[i, k].set(pred_funcs[k](traj[i - 1]))
     return traj
     
+
