@@ -52,10 +52,6 @@ def triangular_kernel(theta, x, y):
 
     return gamma**2 * jnp.maximum(0, 1 - jnp.abs(x - y)/sig**2).sum(-1)
 
-    # xy_norm_squared = get_xy_norm_squared(x, y) 
-    # return gamma**2 * jnp.maximum(0, 1 - jnp.sqrt(xy_norm_squared)/sig**2)
-
-# Got rid of typo where norm is squared. 
 
 def gauss_kernel(theta, x, y):
     xy_norm_squared = get_xy_norm_squared(x, y) 
@@ -79,7 +75,7 @@ def locally_periodic_kernel(theta, x, y):
 
     return gamma**2 * jnp.exp(-sig0**2 * xy_sin_sum) * jnp.exp(-xy_norm_squared/sig2**2)
 
-# DOESN'T WORK. WOULD WORK WITH INNER PRODUCTS (QUADRATIC KERNEL)
+# DON'T USE. DOESN'T WORK. WOULD WORK WITH INNER PRODUCTS (QUADRATIC KERNEL)
 def squared_kernel(theta, x, y):
     gamma = theta
     xy_norm_squared = get_xy_norm_squared(x, y)
